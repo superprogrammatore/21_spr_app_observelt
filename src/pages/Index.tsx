@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { LogViewer } from '@/components/LogViewer';
 import { MetricsPanel } from '@/components/MetricsPanel';
@@ -6,33 +7,25 @@ import { RequestFlow } from '@/components/RequestFlow';
 import { SimulationControls } from '@/components/SimulationControls';
 import { ConceptCard } from '@/components/ConceptCard';
 import { EducationalBanner } from '@/components/EducationalBanner';
+import { IntroModal } from '@/components/IntroModal';
 import { useSimulation } from '@/hooks/useSimulation';
-import { FileText, BarChart3, GitBranch } from 'lucide-react';
+import { FileText, BarChart3, GitBranch, GraduationCap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 /**
  * ObserveIt - Dashboard Educativa sull'Osservabilità
  * 
  * Questa applicazione simula i tre pilastri dell'osservabilità:
  * 
- * 1. LOGGING (Logs)
- *    - Registrazione di eventi discreti
- *    - Contesto testuale di cosa succede
- *    - Utile per debug e audit
- * 
- * 2. METRICS (Metriche)
- *    - Misurazioni numeriche aggregate
- *    - Monitoraggio delle performance
- *    - Base per alerting e SLA
- * 
- * 3. TRACING (Tracce)
- *    - Percorso delle richieste nel sistema
- *    - Correlazione tra servizi
- *    - Identificazione di colli di bottiglia
+ * 1. LOGGING (Logs) - Registrazione di eventi discreti
+ * 2. METRICS (Metriche) - Misurazioni numeriche aggregate
+ * 3. TRACING (Tracce) - Percorso delle richieste nel sistema
  * 
  * NOTA: Tutti i dati sono simulati a scopo educativo.
- * Nessun dato reale viene raccolto o trasmesso.
  */
 const Index = () => {
+  const [showIntro, setShowIntro] = useState(false);
+  
   const {
     logs,
     activeRequest,
@@ -45,11 +38,40 @@ const Index = () => {
     simulateRequest,
   } = useSimulation();
 
+  // Show intro on first visit
+  useEffect(() => {
+    const hasSeenIntro = localStorage.getItem('observeit-intro-seen');
+    if (!hasSeenIntro) {
+      setShowIntro(true);
+    }
+  }, []);
+
+  const handleCloseIntro = () => {
+    setShowIntro(false);
+    localStorage.setItem('observeit-intro-seen', 'true');
+  };
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
+      {/* Intro Modal */}
+      {showIntro && <IntroModal onClose={handleCloseIntro} />}
+
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <Header />
+
+        {/* Quick Intro Button */}
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowIntro(true)}
+            className="text-xs border-primary/30 text-primary hover:bg-primary/10"
+          >
+            <GraduationCap className="w-4 h-4 mr-2" />
+            Rivedi l'introduzione
+          </Button>
+        </div>
 
         {/* Educational Banner */}
         <EducationalBanner />
@@ -59,35 +81,41 @@ const Index = () => {
           <ConceptCard
             title="📝 Logs (Registri)"
             icon={<FileText className="w-5 h-5" />}
-            description="Eventi testuali che raccontano COSA succede nel sistema. Ogni log ha un timestamp, un livello di gravità e un messaggio."
+            description="Messaggi testuali che raccontano cosa succede nel sistema. Ogni log include timestamp, livello di gravità e contesto."
             color="accent"
+            whatItAnswers="Cosa è successo?"
             examples={[
-              "User login at 14:32:05",
-              "Error: Connection refused",
-              "Payment processed successfully"
+              "User Mario ha fatto login alle 14:32",
+              "Errore: Connessione al database rifiutata",
+              "Pagamento di €50 processato con successo"
             ]}
+            realWorldTool="ELK Stack (Elasticsearch), Loki, Splunk, CloudWatch"
           />
           <ConceptCard
             title="📊 Metrics (Metriche)"
             icon={<BarChart3 className="w-5 h-5" />}
-            description="Valori numerici che misurano QUANTO bene funziona il sistema. Permettono di impostare soglie e allarmi."
+            description="Valori numerici che misurano le performance. Permettono di creare dashboard, allarmi e prevedere problemi."
             color="success"
+            whatItAnswers="Quanto bene funziona?"
             examples={[
-              "Latenza media: 145ms",
-              "Richieste/secondo: 1.2K",
-              "Error rate: 0.5%"
+              "Latenza media: 145ms (era 50ms ieri)",
+              "1.2K richieste al secondo",
+              "Error rate: 0.5% (soglia allarme: 5%)"
             ]}
+            realWorldTool="Prometheus, Grafana, Datadog, New Relic"
           />
           <ConceptCard
             title="🔗 Traces (Tracce)"
             icon={<GitBranch className="w-5 h-5" />}
-            description="Percorso completo di una richiesta attraverso tutti i servizi. Mostra DOVE viene speso il tempo."
+            description="Percorso completo di una richiesta attraverso tutti i servizi. Mostra dove viene speso il tempo e dove nascono i problemi."
             color="trace"
+            whatItAnswers="Dove succede?"
             examples={[
-              "Frontend → Backend → DB",
-              "Span duration: 50ms",
-              "Parent-child relationships"
+              "Frontend (50ms) → Backend (100ms) → DB (200ms)",
+              "Span: 'Validazione input' - 25ms",
+              "TraceId: abc123 collega tutti gli eventi"
             ]}
+            realWorldTool="Jaeger, Zipkin, Tempo, AWS X-Ray"
           />
         </div>
 
@@ -116,12 +144,15 @@ const Index = () => {
         </div>
 
         {/* Footer */}
-        <footer className="glass-panel p-4 text-center text-sm text-muted-foreground">
+        <footer className="glass-panel p-4 text-center text-sm text-muted-foreground space-y-2">
           <p>
             ⚠️ <strong>Disclaimer:</strong> Questa è una simulazione educativa. 
             Tutti i dati sono generati localmente e non vengono raccolti o trasmessi.
           </p>
-          <p className="mt-2 text-xs">
+          <p className="text-xs">
+            💡 <strong>Prossimi passi:</strong> Per imparare di più, cerca "OpenTelemetry", "Prometheus", o "Grafana" online!
+          </p>
+          <p className="text-xs text-primary">
             ObserveIt - Impara l'osservabilità vedendola in azione 🚀
           </p>
         </footer>
