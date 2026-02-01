@@ -1,4 +1,6 @@
-import { Activity, Eye } from 'lucide-react';
+import { Activity, Eye, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Header del dashboard ObserveIt
@@ -7,6 +9,8 @@ import { Activity, Eye } from 'lucide-react';
  * fondamentale per capire il comportamento di sistemi complessi.
  */
 export function Header() {
+  const { logout } = useAuth();
+
   return (
     <header className="glass-panel p-6 mb-6">
       <div className="flex items-center justify-between">
@@ -25,19 +29,31 @@ export function Header() {
           </div>
         </div>
         
-        <div className="hidden md:flex items-center gap-6 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-accent animate-pulse-glow" />
-            <span className="text-muted-foreground">Logs</span>
+        <div className="flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-accent animate-pulse-glow" />
+              <span className="text-muted-foreground">Logs</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-success animate-pulse-glow" />
+              <span className="text-muted-foreground">Metriche</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-trace animate-pulse-glow" />
+              <span className="text-muted-foreground">Tracce</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-success animate-pulse-glow" />
-            <span className="text-muted-foreground">Metriche</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-trace animate-pulse-glow" />
-            <span className="text-muted-foreground">Tracce</span>
-          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={logout}
+            className="text-xs border-destructive/30 text-destructive hover:bg-destructive/10"
+          >
+            <LogOut className="w-4 h-4 mr-1" />
+            Esci
+          </Button>
         </div>
       </div>
     </header>
