@@ -127,19 +127,6 @@ export function LoginPage() {
                 )}
               </Button>
             </form>
-
-            {/* Security Info */}
-            <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
-              <h4 className="text-sm font-medium text-primary mb-2 flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                Sicurezza
-              </h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Il tuo codice viene verificato tramite <strong>hash SHA-256</strong>. 
-                Il codice originale non viene mai memorizzato né trasmesso in chiaro, 
-                garantendo la massima sicurezza.
-              </p>
-            </div>
           </CardContent>
         </Card>
 
