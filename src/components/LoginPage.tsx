@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Eye, EyeOff, Lock, Shield, Fingerprint } from 'lucide-react';
+import { Eye, EyeOff, Lock, Fingerprint } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { hashCode } from '@/lib/hash';
 import { useAuth } from '@/contexts/AuthContext';
+import superProgrammatoreLogo from '@/assets/super-programmatore-logo.png';
 
 // Hash SHA-256 pre-calcolato del codice di accesso valido
 const VALID_ACCESS_CODE_HASH = '8e0094a56fe502cc605d51c5e62816ef427406578347c26c778868e4846adfa7';
@@ -42,26 +43,23 @@ export function LoginPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
+        {/* Logo */}
+        <div className="flex justify-center">
+          <img 
+            src={superProgrammatoreLogo} 
+            alt="Super Programmatore Logo" 
+            className="w-48 h-auto drop-shadow-lg"
+          />
+        </div>
+
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="w-20 h-20 rounded-2xl bg-primary/20 flex items-center justify-center animate-pulse-glow">
-                <Shield className="w-10 h-10 text-primary" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-lg bg-accent/30 flex items-center justify-center">
-                <Lock className="w-4 h-4 text-accent" />
-              </div>
-            </div>
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">
-              Observe<span className="text-primary">It</span>
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Dashboard Educativa sull'Osservabilità
-            </p>
-          </div>
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold text-foreground">
+            Observe<span className="text-primary">It</span>
+          </h1>
+          <p className="text-muted-foreground">
+            Dashboard Educativa sull'Osservabilità
+          </p>
         </div>
 
         {/* Login Card */}
